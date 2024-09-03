@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYUSERS</title>
+    <link rel="stylesheet" href="{% static 'skyusers/css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>SKYUSERS</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#">Início</a></li>
+            <li class="active"><a>Informações</a></li>
+            <ul class="submenu">
+                <li><a href="#">Gráfico</a></li>
+                <li><a href="#">IP Disponível</a></li>
+            </ul>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <header>
+            <div class="page-title">
+                <h1>Clientes</h1>
+                <p>/ Usuários</p>
+            </div>
+        </header>
+        
+        <div class="table-header">
+            <div class="left-container">
+                <input type="text" placeholder="Pesquisar">
+            </div>
+            <div class="right-container">
+                <button class="filter-btn">Filtrar</button>
+                <button class="new-btn">Novo +</button>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>IP</th>
+                    <th>CNPJ</th>
+                    <th>QT. Usuários</th>
+                    <th>Usuários</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#1234GFH</td>
+                    <td>Placa-mãe</td>
+                    <td>1242</td>
+                    <td>158.555.555</td>
+                    <td>5</td>
+                    <td><button class="users-btn">🧑‍🧑‍🧒‍🧒</button></td>
+                    <td><button class="edit-btn">✏️</button></td>
+                </tr>
+                <tr>
+                    <td>#544GFH2</td>
+                    <td>Memória RAM</td>
+                    <td>1242</td>
+                    <td>158.555.444</td>
+                    <td>5</td>
+                    <td><button class="users-btn">🧑‍🧑‍🧒‍🧒</button></td>
+                    <td><button class="edit-btn">✏️</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
