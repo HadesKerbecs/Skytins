@@ -1,192 +1,80 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PsicoSimula</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'ferramentasweb/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="{% static 'ferramentasweb/images/logo3.png' %}" type="image/png">
+    <title>SKYUSERS</title>
+    <link rel="stylesheet" href="{% static 'skyusers/css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar">
-            <img src="{% static 'ferramentasweb/images/logo1.png' %}" alt="Logo PsicoSimula" class="logo-title">
-            <h1></h1>
-            <div class="menu-item2">
-                <div class="button-container">
-                    <button class="button refresh-button" >
-                        <a href="#" id="refresh-link">
-                            <img src="{% static 'ferramentasweb/images/Vector3.png' %}" alt="Ícone Gerar Caso" class="icon-white">
-                            Gerar Novo Caso
-                        </a>
-                    </button>
-                    <button class="button" id="button-historico">
-                        <img src="{% static 'ferramentasweb/images/Historico.png' %}" alt="Ícone Historico" class="icon-white">
-                        Histórico
-                    </button>
-                    <button class="button" id="button-compartilhar">
-                        <img src="{% static 'ferramentasweb/images/Download.png' %}" alt="ícone Compartilhar" class="icon-white">
-                        Compartilhar
-                    </button>
-                </div>
-            </div>
-            <div class="about">
-                <div class="circle">
-                    <img src="{% static 'ferramentasweb/images/logo4.png' %}" alt="Ícone" />
-                </div>
-                <h3>Sobre</h3>
-                <p>Explore e gere casos clínicos hipotéticos para estudo em psicopatologia com o poder da inteligência artificial generativa. Encontre respostas e recursos que você precisa.</p>
-            </div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>SKYUSERS</h2>
         </div>
-        <div class="main-content">
-            <h2>Casos Hipotéticos</h2>
-            <img id="raio-image" src="{% static 'ferramentasweb/images/psicosimula.png' %}" alt="Ícone Informações">
-            <div class="chat-container">
-                <div id="chat-box" class="hidden">
-                    <div>
-                        <img src="{% static 'ferramentasweb/images/Brilho.png' %}" alt="ícone Resultado" class="result-image"/>
-                    </div>
-                    <!-- Mensagens da conversa serão adicionadas aqui -->
-                </div>
-                <div class="input-container">
-                    <div class="textarea-wrapper">
-                        <textarea id="user-input" placeholder="Informe o caso clínico"></textarea>
-                        <button id="send-button" disabled>Simular</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#">Início</a></li>
+            <li class="active"><a>Informações</a></li>
+            <ul class="submenu">
+                <li><a href="#">Gráfico</a></li>
+                <li><a href="#">IP Disponível</a></li>
+            </ul>
+        </ul>
     </div>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatBox = document.getElementById('chat-box');
-            const userInput = document.getElementById('user-input');
-            const sendButton = document.getElementById('send-button');
-            const refreshLink = document.getElementById('refresh-link');
-            const buttonCompartilhar = document.getElementById('button-compartilhar');
-
-            // Função para compartilhar o conteúdo da conversa
-            function compartilharConteudoConsulta() {
-                const mensagens = chatBox.querySelectorAll('.message');
-                let consultaConteudo = '';
-
-                mensagens.forEach(mensagem => {
-                    consultaConteudo += mensagem.textContent + '\n'; // Concatena o conteúdo das mensagens
-                });
-
-                if (consultaConteudo.trim() === "") {
-                    alert('Nenhuma consulta disponível para compartilhar.');
-                    return;
-                }
-
-                // Compartilha o conteúdo concatenado
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Consulta do PsicoSimula',
-                        text: consultaConteudo.trim(),
-                    })
-                    .then(() => console.log('Consulta compartilhada com sucesso'))
-                    .catch((error) => console.error('Erro ao compartilhar:', error));
-                } else {
-                    alert('O compartilhamento não é suportado neste dispositivo.');
-                }
-            }
-
-            // Adiciona o evento ao botão de compartilhar
-            buttonCompartilhar.addEventListener('click', compartilharConteudoConsulta);
-
-            refreshLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                location.reload();
-            });
-
-            userInput.addEventListener('input', function() {
-                sendButton.disabled = userInput.value.trim() === '';
-            });
-
-            sendButton.addEventListener('click', sendMessage);
-
-            userInput.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            function sendMessage() {
-                const userMessage = userInput.value.trim();
-                if (userMessage !== '') {
-                    addMessageToChat('user', userMessage);
-                    processMessage(userMessage);
-                    userInput.value = '';
-                    sendButton.disabled = true;
-                    chatBox.classList.remove('hidden');
-                }
-            }
-
-            function addMessageToChat(sender, message) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message', sender);
-                messageElement.textContent = message;
-                chatBox.appendChild(messageElement);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-
-            async function processMessage(message) {
-                try {
-                    const response = await fetch("{% url 'gerar_caso_stream' %}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: JSON.stringify({ user_input: message })
-                    });
-
-                    if (!response.ok) throw new Error('Network response was not ok');
-
-                    const reader = response.body.getReader();
-                    const decoder = new TextDecoder();
-                    let accumulatedText = '';
-                    let botMessageElement = null;
-
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-
-                        const chunk = decoder.decode(value, { stream: true });
-                        const parsedChunks = chunk.split('\n').filter(chunk => chunk.trim() !== '');
-
-                        parsedChunks.forEach(parsedChunk => {
-                            try {
-                                const jsonChunk = JSON.parse(parsedChunk);
-                                if (jsonChunk.response) {
-                                    accumulatedText = jsonChunk.response;
-
-                                    if (!botMessageElement) {
-                                        botMessageElement = document.createElement('div');
-                                        botMessageElement.classList.add('message', 'bot');
-                                        chatBox.appendChild(botMessageElement);
-                                    }
-
-                                    botMessageElement.textContent = accumulatedText;
-                                    chatBox.scrollTop = chatBox.scrollHeight;
-                                } else if (jsonChunk.error) {
-                                    addMessageToChat('bot', jsonChunk.error);
-                                }
-                            } catch (error) {
-                                addMessageToChat('bot', "Erro ao processar a resposta do servidor.");
-                            }
-                        });
-                    }
-                } catch (error) {
-                    addMessageToChat('bot', "Erro ao se conectar com o servidor: " + error.message);
-                }
-            }
-        });
-    </script>        
+    <div class="main-content">
+        <header>
+            <div class="page-title">
+                <h1>Clientes</h1>
+                <p>/ Usuários</p>
+            </div>
+        </header>
+        
+        <div class="table-header">
+            <div class="left-container">
+                <form method="GET" action="{% url 'lista_clientes' %}">
+                    <input type="text" name="search" placeholder="Pesquisar" value="{{ request.GET.search }}">
+                </form>
+            </div>
+            <div class="right-container">
+                <form method="GET" action="{% url 'lista_clientes' %}">
+                    <input type="text" name="search" placeholder="Pesquisar" value="{{ request.GET.search }}" style="display:none;">
+                    <button type="submit" class="filter-btn">Filtrar</button>
+                </form>
+                <a href="{% url 'adicionar_cliente' %}">
+                    <button class="new-btn">Novo +</button>
+                </a>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>IP</th>
+                    <th>CNPJ</th>
+                    <th>QT. Usuários</th>
+                    <th>Grupo</th>
+                    <th>Usuários</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.codigo }}</td>
+                    <td>{{ cliente.nome }}</td>
+                    <td>{{ cliente.ip }}</td>
+                    <td>{{ cliente.cnpj }}</td>
+                    <td>{{ cliente.qt_usuarios }}</td>
+                    <td>{{ cliente.grupo }}</td>
+                    <td><button class="users-btn">🧑‍🧑‍🧒‍🧒</button></td>
+                    <td><button class="edit-btn">✏️</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
