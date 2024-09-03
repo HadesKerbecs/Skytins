@@ -78,6 +78,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': 'usuario_do_banco',
+        'PASSWORD': 'senha_do_banco',
+        'HOST': 'localhost',  # ou o endereço do servidor
+        'PORT': '3306', 
     }
 }
 
